@@ -5,30 +5,45 @@ const FULL_HEART = '♥'
 // Your JavaScript code goes here!
 const updateHearts=document.querySelectorAll(".like-glyph")
 
-function likeCallback(e) {
-  const heart=e.target;
-  mimicServerCall()
-  .then(function () {
-    if (likeButton.innerText===EMPTY_HEART){
-      likeButton.innerText=FULL_HEART;
-      likeButton.className='activated-heart';
-    } else{
-      likeButton.innerText=EMPTY_HEART;
-      likeButton.className="";
-    } 
-  })
-  .catch((error)=> {
-    const modal=document.getElementById("modal");
-    modal.className="";
-    modal.innerText=error;
-    setTimeout(() => modal.className="hidden",  3000);
-  })
-  
-}
+document.querySelector('#modal').className = 'hidden'
 
-for (const glyph of updateHearts) {
-  glyph.addEventListener("click", likeCallback);
+const likeButtons = document.querySelectorAll('.like-glyph')
+
+function myLikes() {
+    likeButtons.forEach(function(button) {
+        button.addEventListener('click', function(event) {
+
+            if (event.target.innerHTML == EMPTY_HEART) {
+                mimicServerCall("")
+                    .then(function(resp) {
+
+                        event.target.innerHTML = FULL_HEART
+                        event.target.classList.add('activated-heart')
+
+                    })
+
+
+                .catch(function(error) {
+                    let modal = document.querySelector('#modal')
+                    modal.classList.remove('hidden')
+                    modal.innerText = "Random server error. Try again."
+
+                    setTimeout(() => {
+                        modal.classList.add('hidden')
+                    }, 3000);
+                })
+
+
+
+            } else {
+                event.target.innerHTML = EMPTY_HEART
+                event.target.classList.remove('activated-heart')
+            }
+        })
+    })
+
 }
+myLikes()
 
 
 

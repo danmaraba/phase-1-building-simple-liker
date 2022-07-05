@@ -1,49 +1,29 @@
 // Defining text characters for the empty and full hearts for you to use later.
 const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
-
+const like = document.querySelectorAll(".like-glyph")
+const errorTxt = document.getElementById("modal")
+console.log(errorTxt)
 // Your JavaScript code goes here!
-const updateHearts=document.querySelectorAll(".like-glyph")
-
-document.querySelector('#modal').className = 'hidden'
-
-const likeButtons = document.querySelectorAll('.like-glyph')
-
-function myLikes() {
-    likeButtons.forEach(function(button) {
-        button.addEventListener('click', function(event) {
-
-            if (event.target.innerHTML == EMPTY_HEART) {
-                mimicServerCall("")
-                    .then(function(resp) {
-
-                        event.target.innerHTML = FULL_HEART
-                        event.target.classList.add('activated-heart')
-
-                    })
-
-
-                .catch(function(error) {
-                    let modal = document.querySelector('#modal')
-                    modal.classList.remove('hidden')
-                    modal.innerText = "Random server error. Try again."
-
-                    setTimeout(() => {
-                        modal.classList.add('hidden')
-                    }, 3000);
-                })
-
-
-
-            } else {
-                event.target.innerHTML = EMPTY_HEART
-                event.target.classList.remove('activated-heart')
-            }
-        })
+for (const likes of like) {
+  likes.addEventListener('click', () => {
+    mimicServerCall("http://mimicServer.example.com")
+    .then(()=>{
+      if ( likes.innerText === EMPTY_HEART) {
+        likes.innerText = FULL_HEART;
+        likes.className = "activated-heart";
+      } else {
+      likes.innerText = EMPTY_HEART;
+    }
     })
-
+    .catch((msg) => {
+      errorTxt.className = ""
+      errorTxt.innerText = msg
+      setTimeout(() =>  errorTxt.className = "hidden", 3000);
+    })
+  })
 }
-myLikes()
+
 
 
 
